@@ -17,18 +17,25 @@ class SynonymSubstituition:
 
     similarity = .8
 
-    def __new__(cls, sentence, difficulty_level=difficulty_level):
+    def __new__(cls, sentence, word=None, difficulty_level=difficulty_level):
         SynonymSubstituition.difficulty_level = difficulty_level
-        for word in sentence.strip().split(' '):
-            if CheckRareWord(word) > SynonymSubstituition.difficulty_level:
-                syn = SynonymSubstituition.get_syn(sentence, word)
-                syn = ','.join(syn.split(',')[0:SynonymSubstituition.num_syns_display])
-                # syn = syn[0:SynonymSubstituition.num_syns]
-                # sentence = sentence.replace(word, "{}: {}".format(word, str(syn)))
-                replace_str = "{} [{}]".format(ColorOutput(word, 'bold'), ColorOutput(syn, 'emphasis'))
-                sentence = sentence.replace(word, replace_str)
+        if not word:
+            for word in sentence.strip().split(' '):
+                sentence = SynonymSubstituition.replace_in_word(sentence, word)
+        else:
+            sentence = SynonymSubstituition.replace_in_word(sentence, word)
         return sentence
 
+    @staticmethod
+    def replace_in_word(sentence, word):
+        if CheckRareWord(word) > SynonymSubstituition.difficulty_level:
+            syn = SynonymSubstituition.get_syn(sentence, word)
+            syn = ','.join(syn.split(',')[0:SynonymSubstituition.num_syns_display])
+            # syn = syn[0:SynonymSubstituition.num_syns]
+            # sentence = sentence.replace(word, "{}: {}".format(word, str(syn)))
+            replace_str = "{} [{}]".format(ColorOutput(word, 'bold'), ColorOutput(syn, 'emphasis'))
+            sentence = sentence.replace(word, replace_str)
+        return sentence
 
     @staticmethod
     def get_syn(sentence, word):
