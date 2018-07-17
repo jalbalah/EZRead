@@ -1,5 +1,6 @@
 
 
+import pandas as pd
 from difflib import SequenceMatcher
 from nltk import word_tokenize
 from pdb import set_trace as st
@@ -23,12 +24,12 @@ class SynonymSubstituition:
             for word in sentence.strip().split(' '):
                 sentence = SynonymSubstituition.replace_in_word(sentence, word)
         else:
-            sentence = SynonymSubstituition.replace_in_word(sentence, word)
+            sentence = SynonymSubstituition.replace_in_word(sentence, word, use_common=True)
         return sentence
 
     @staticmethod
-    def replace_in_word(sentence, word):
-        if CheckRareWord(word) > SynonymSubstituition.difficulty_level:
+    def replace_in_word(sentence, word, use_common=False):
+        if use_common or CheckRareWord(word) > SynonymSubstituition.difficulty_level:
             syn = SynonymSubstituition.get_syn(sentence, word)
             syn = ','.join(syn.split(',')[0:SynonymSubstituition.num_syns_display])
             # syn = syn[0:SynonymSubstituition.num_syns]
@@ -41,7 +42,19 @@ class SynonymSubstituition:
     def get_syn(sentence, word):
         # return WordNet.get_syn(word, types=[SynonymSubstituition.get_type(sentence, word)])[0]
         syn = WordNet.get_syn(word, types=[SynonymSubstituition.get_type(sentence, word)])
-        return syn[0] if syn else '?'
+        syn = pd.Series(syn)
+        syn = syn[syn != word].unique()
+        syn2 = []
+        for i in range(len(syn)):
+            if len(syn[i].split(', ')) > 0:
+                for wd in sorted(syn[i].split(', '),
+                                 key=lambda x: CheckRareWord(x)):
+                    syn2.append(wd.strip())
+            else:
+                syn2.append(syn[i].strip())
+        st()
+        return ', '.join(syn2[0:SynonymSubstituition.num_syns_display]) if len(syn) > 0  \
+               else '?'
 
     @staticmethod
     def get_type(sentence, word):

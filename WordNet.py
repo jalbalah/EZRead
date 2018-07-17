@@ -19,7 +19,10 @@ class WordNetHelper:
     @staticmethod
     def get_syn(word, t):
         res = WordNetHelper.shell_command(['wn', word, '-syns{}'.format(t)])
-        res = [x[3::].replace('       =>', '') for x in res.split('Sense')]
+        res = [x[3::].replace('      =>', '').replace('          Also See-> ', '')
+               .replace('#1', '').replace('#2', '').replace('#3', '').replace('#4', '')
+                .replace('#5', '').replace('#6', '').replace('#7', '').replace('#8', '')
+               for x in res.split('Sense')]
         del res[0]
         res = '\n'.join(res).split('\n')
         res2 = []
