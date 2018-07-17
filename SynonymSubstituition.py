@@ -17,8 +17,7 @@ class SynonymSubstituition:
 
     similarity = .8
 
-    def __new__(cls, *args, **kwargs):
-        sentence, word = [x.lower() for x in args]
+    def __new__(cls, sentence):
         for word in sentence.strip().split(' '):
             if CheckRareWord(word) > SynonymSubstituition.difficulty_level:
                 syn = SynonymSubstituition.get_syn(sentence, word)
