@@ -47,3 +47,5 @@ class WordNet:
         res = WordNetHelper.shell_command(['wn', word, '-faml{}'.format(t)])
         res = res[res.find('=') + 2:-1]
         return int(res) if res != '' else 0
+
+

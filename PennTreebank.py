@@ -22,3 +22,5 @@ class PennTreebank:
             return 'a'
         elif 'RB' in pos:
             return 'r'
+        else:
+            return 'n'

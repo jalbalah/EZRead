@@ -11,8 +11,8 @@ class CheckRareWord:
     word_freq_path = '100k_most_common.txt'
     word_freq = None
 
-
     def __new__(cls, word):
+        word = word.lower()
         if not CheckRareWord.word_freq:
             CheckRareWord.word_freq =  \
                 CheckRareWord.get_word_freq(CheckRareWord.word_freq_path)
@@ -29,8 +29,14 @@ class CheckRareWord:
                 word_freq = pickle.load(rf)
         else:
             with open(word_freq_path, 'r', encoding='utf-8') as rf:
-                word = [x.strip() for x in rf.readlines()]
-                word_freq = dict([[word[i], i] for i in range(0, len(word))])
+                word = [x.strip().lower() for x in rf.readlines()]
+                word_freq_list = [[word[i], i] for i in range(0, len(word))]
+                word_freq = {}
+                for word, i in word_freq_list:
+                    if word in word_freq:
+                        pass
+                    else:
+                        word_freq[word] = i
             with open(word_freq_path_pik, 'wb') as wf:
                 pickle.dump(word_freq, wf)
         return word_freq
