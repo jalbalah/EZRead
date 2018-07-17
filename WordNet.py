@@ -19,10 +19,17 @@ class WordNetHelper:
     @staticmethod
     def get_syn(word, t):
         res = WordNetHelper.shell_command(['wn', word, '-syns{}'.format(t)])
-        res = [x[3::].replace('       => ', '') for x in res.split('Sense')]
-        res = [x.split('\n') for x in res]
+        res = [x[3::].replace('       =>', '') for x in res.split('Sense')]
         del res[0]
-        return res
+        res = '\n'.join(res).split('\n')
+        res2 = []
+        for i in list(range(0, len(res))):
+            if res[i] == '' or 'Derived from' in res[i]:
+                pass
+            else:
+                res2.append(res[i])
+        return res2
+
 
 class WordNet:
 
@@ -34,3 +41,9 @@ class WordNet:
             if len(syns) != 0:
                 s += syns[0:most_freq]
         return s
+
+    @staticmethod
+    def get_freq(word, t):
+        res = WordNetHelper.shell_command(['wn', word, '-faml{}'.format(t)])
+        res = res[res.find('=') + 2:-1]
+        return int(res) if res != '' else 0

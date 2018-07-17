@@ -17,8 +17,7 @@ class SynonymSubstituition:
     def __new__(cls, *args, **kwargs):
         sentence, word = args
         syn = SynonymSubstituition.get_syn(sentence, word)
-        syn = syn[0] if SynonymSubstituition.similar(syn[0], word) < SynonymSubstituition.similarity else syn[1]
-        syn = ', '.join(syn.split(', ')[0:SynonymSubstituition.num_syns])
+        syn = ','.join(syn.split(',')[0:SynonymSubstituition.num_syns])
         # syn = syn[0:SynonymSubstituition.num_syns]
         # sentence = sentence.replace(word, "{}: {}".format(word, str(syn)))
         replace_str = "{} ({})".format(ColorOutput(word, 'bold'), ColorOutput(syn, 'emphasis'))
