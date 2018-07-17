@@ -52,7 +52,6 @@ class SynonymSubstituition:
                     syn2.append(wd.strip())
             else:
                 syn2.append(syn[i].strip())
-        st()
         return ', '.join(syn2[0:SynonymSubstituition.num_syns_display]) if len(syn) > 0  \
                else '?'
 
