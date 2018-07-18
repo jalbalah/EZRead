@@ -5,12 +5,9 @@ from CheckRareWord import CheckRareWord
 
 
 if __name__ == '__main__':
-    print('\nThreshold select word...')
-    sentence = 'and now for something completely different'  # 'the convict went to jail'
+    sentence = "The word you've entered isn't in the thesaurus.  \
+                Click on a spelling suggestion below or try again using the search bar above.  \
+                Don't be a convict!"
+    sentence = 'the cell was surrounded by a phospholipid bi-layer'
     print(SynonymSubstituition(sentence))
-
-    print('\nExplicitly select word...')
-    word = 'different'
-    print(SynonymSubstituition(sentence, word))
-
 

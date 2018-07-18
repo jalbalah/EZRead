@@ -21,7 +21,7 @@ class WordNetHelper:
         res = WordNetHelper.shell_command(['wn', word, '-syns{}'.format(t)])
         res = [x[3::].replace('      =>', '').replace('          Also See-> ', '')
                .replace('#1', '').replace('#2', '').replace('#3', '').replace('#4', '')
-                .replace('#5', '').replace('#6', '').replace('#7', '').replace('#8', '')
+               .replace('#5', '').replace('#6', '').replace('#7', '').replace('#8', '')
                for x in res.split('Sense')]
         del res[0]
         res = '\n'.join(res).split('\n')
@@ -36,8 +36,10 @@ class WordNetHelper:
 
 class WordNet:
 
+    default_types = ['n', 'v', 'a', 'r']
+
     @staticmethod
-    def get_syn(word, types=['n', 'v', 'a', 'r'], most_freq=99):
+    def get_syn(word, types=default_types, most_freq=99):
         s = []
         for t in types:
             syns = WordNetHelper.get_syn(word, t)

@@ -4,6 +4,7 @@ import os
 import pickle
 from pdb import set_trace as st
 
+
 class CheckRareWord:
     """ larger number is LESS frequent word """
 

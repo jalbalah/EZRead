@@ -1,5 +1,6 @@
 
 
+import re
 import pandas as pd
 from difflib import SequenceMatcher
 from nltk import word_tokenize
@@ -19,6 +20,8 @@ class SynonymSubstituition:
     similarity = .8
 
     def __new__(cls, sentence, word=None, difficulty_level=difficulty_level):
+        sentence = SynonymSubstituition.clean(sentence)
+        word = None if not word else SynonymSubstituition.clean(word)
         SynonymSubstituition.difficulty_level = difficulty_level
         if not word:
             for word in sentence.strip().split(' '):
@@ -29,29 +32,44 @@ class SynonymSubstituition:
 
     @staticmethod
     def replace_in_word(sentence, word, use_common=False):
+        orig_word = word
+        word = SynonymSubstituition.clean(word)
+        sentence2 = ''
         if use_common or CheckRareWord(word) > SynonymSubstituition.difficulty_level:
-            syn = SynonymSubstituition.get_syn(sentence, word)
+            syn = SynonymSubstituition.get_syn(SynonymSubstituition.clean(sentence), word)
             syn = ','.join(syn.split(',')[0:SynonymSubstituition.num_syns_display])
-            # syn = syn[0:SynonymSubstituition.num_syns]
-            # sentence = sentence.replace(word, "{}: {}".format(word, str(syn)))
-            replace_str = "{} [{}]".format(ColorOutput(word, 'bold'), ColorOutput(syn, 'emphasis'))
-            sentence = sentence.replace(word, replace_str)
-        return sentence
+            replace_str = "{} [{}]".format(ColorOutput(orig_word, 'bold'), ColorOutput(syn, 'emphasis'))
+            for wd in sentence.split(' '):
+                if SynonymSubstituition.clean(wd) == word:
+                    sentence2 += replace_str
+                else:
+                    sentence2 += wd
+                sentence2 += ' '
+        return sentence2 if sentence2 != '' else sentence
 
     @staticmethod
     def get_syn(sentence, word):
         # return WordNet.get_syn(word, types=[SynonymSubstituition.get_type(sentence, word)])[0]
+        # st()
+        word = word.split(' ')[0]
         syn = WordNet.get_syn(word, types=[SynonymSubstituition.get_type(sentence, word)])
-        syn = pd.Series(syn)
-        syn = syn[syn != word].unique()
-        syn2 = []
-        for i in range(len(syn)):
-            if len(syn[i].split(', ')) > 0:
-                for wd in sorted(syn[i].split(', '),
-                                 key=lambda x: CheckRareWord(x)):
-                    syn2.append(wd.strip())
-            else:
-                syn2.append(syn[i].strip())
+        if len(syn) == 0:
+            syn = WordNet.get_syn(word)  # get all syns, ranked by general commonality (not wd specific)
+        if len(syn) > 0:
+            syn = pd.Series(syn)
+            try:
+                syn = syn[syn != word].unique()
+            except:
+                st()
+            syn2 = []
+            for i in range(len(syn)):
+                if len(syn[i].split(', ')) > 0:
+                    syn[i] = syn[i].split(', ')
+                    key = lambda x: CheckRareWord(SynonymSubstituition.clean(x).split(' ')[0])
+                    for wd in sorted(syn[i], key=key):
+                        syn2.append(wd.strip())
+                else:
+                    syn2.append(syn[i].strip())
         return ', '.join(syn2[0:SynonymSubstituition.num_syns_display]) if len(syn) > 0  \
                else '?'
 
@@ -62,12 +80,19 @@ class SynonymSubstituition:
 
     @staticmethod
     def get_word_pos(sentence_pos, word):
+        word = word.split(' ')[0]
         for wd, pos in sentence_pos:
-            if wd == word:
+            if SynonymSubstituition.clean(wd) == word:
                 return pos
+        print(sentence_pos)
+        print(word)
         st()
         raise Exception('word not found in pos-tagged sentence')
 
     @staticmethod
     def similar(word_1, word_2):
         return SequenceMatcher(None, word_1, word_2).ratio()
+
+    @staticmethod
+    def clean(string):
+        return ' '.join(re.findall('[a-z]+', string.strip().lower()))
