@@ -13,4 +13,3 @@ sentence = "The word you've entered isn't in the thesaurus.  \
             Click on a spelling suggestion below or try again using the search bar above.  \
             Don't be a convict!"
 sentence = 'the cell was surrounded by a phospholipid bi-layer'
-"""
