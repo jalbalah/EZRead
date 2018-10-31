@@ -14,7 +14,7 @@ from CheckRareWord import CheckRareWord
 
 class SynonymSubstituition:
 
-    difficulty_level = 2e3
+    difficulty_level = 10e3  # 2e3
     num_syns_display = 4
 
     similarity = .8
@@ -84,10 +84,8 @@ class SynonymSubstituition:
         for wd, pos in sentence_pos:
             if SynonymSubstituition.clean(wd) == word:
                 return pos
-        print(sentence_pos)
-        print(word)
-        st()
-        raise Exception('word not found in pos-tagged sentence')
+        print('ERROR: word "{}" not found in pos-tagged sentence'.format(word))
+        return 'NN'
 
     @staticmethod
     def similar(word_1, word_2):

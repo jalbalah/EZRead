@@ -25,7 +25,7 @@ class CheckRareWord:
     @staticmethod
     def get_word_freq(word_freq_path):
         word_freq_path_pik = word_freq_path.replace('.txt', '.pik')
-        if os.path.exists(word_freq_path_pik):
+        if False and os.path.exists(word_freq_path_pik):
             with open(word_freq_path_pik, 'rb') as rf:
                 word_freq = pickle.load(rf)
         else:
@@ -38,6 +38,6 @@ class CheckRareWord:
                         pass
                     else:
                         word_freq[word] = i
-            with open(word_freq_path_pik, 'wb') as wf:
-                pickle.dump(word_freq, wf)
+            # with open(word_freq_path_pik, 'wb') as wf:
+            #     pickle.dump(word_freq, wf)
         return word_freq
